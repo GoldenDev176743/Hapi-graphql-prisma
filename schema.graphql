@@ -1,0 +1,558 @@
+  # type Mutation {
+  #   createDraft(authorEmail: String!, data: PostCreateInput!): Post
+  #   deletePost(id: String!): Post
+  #   incrementPostViewCount(id: String!): Post
+  #   signupUser(data: UserCreateInput!): User!
+  #   togglePublishPost(id: String!): Post
+  # }
+
+  type Query {
+    organization( id: String!): Organization
+    allOrganizations: [Organization]
+
+    dispensary( id: String!): Dispensary
+    allDispensaries: [Dispensary]
+    allDispensariesByOrganizationId( organizationId: String!): [Dispensary]
+
+    supplier( id: String!): Supplier
+    allSuppliersByOrganizationId( organizationId: String!): [Supplier]
+
+    allUsersByDispensaryId( dispensaryId: String!): [User]
+    user( id: String!): User
+
+    customer( id: String!): Customer
+    allCustomersByDispensaryId( dispensaryId: String!): [Customer]
+
+    metrcInfoByDispensaryId( dispensaryId: String!): metrcInfo!
+    allLoyaltiesByDispensaryId( dispensaryId: String!): [Loyalty]
+    loyalty( id: String!): Loyalty
+
+    allDiscountsByDispensaryId( dispensaryId: String!): [Discount]
+    discount( id: String!): Discount
+
+    allItemCategoriesByStateOfUsa( stateOfUsa: StateType!): [ItemCategory]
+    itemCategory(id: String!): ItemCategory
+
+    allTaxSettingByDispensaryId( dispensaryId: String!): [TaxSetting]
+    taxSetting(id: String!): TaxSetting
+  }
+
+  type Mutation {
+
+    createOrganization(input: OrganizationCreateInput!): Organization
+    updateOrganization(input: OrganizationUpdateInput!): Organization
+    deleteOrganization(id: String!): Organization
+
+    createUser(input: UserCreateInput!): User
+    updateUser(input: UserUpdateInput!): User
+    deleteUser(id: String!): User
+
+    createCustomer(input: CustomerCreateInput!): Customer
+    updateCustomer(input: CustomerUpdateInput!): Customer
+    deleteCustomer(id: String!): Customer
+
+    createDispensary(input: DispensaryCreateInput!): Dispensary
+    updateDispensary(input: DispensaryUpdateInput!): Dispensary
+    deleteDispensary(id: String!): Dispensary
+
+    createSupplier(input: SupplierCreateInput!): Supplier
+    updateSupplier(input: SupplierUpdateInput!): Supplier
+    deleteSupplier(id: String!): Supplier
+
+    loginUser(input: UserLoginInput!): userData!
+    metrcConnectionUpdate(input: MetrcConnectionInput!): Dispensary
+
+    createLoyalty(input: LoyaltyCreateInput!): Loyalty
+    updateLoyalty(input: LoyaltyUpdateInput!): Loyalty
+    deleteLoyalty(id: String!): Loyalty
+
+    createDiscount(input: DiscountCreateInput!): Discount
+    updateDiscount(input: DiscountUpdateInput!): Discount
+    deleteDiscount(id: String!): Discount
+
+    createItemCategory(input: ItemCategoryCreateInput!): ItemCategory
+    updateItemCategory(input: ItemCategoryUpdateInput!): ItemCategory
+    deleteItemCategory(id: String!): ItemCategory
+
+    createTaxSetting(input: TaxSettingCreateInput!): TaxSetting
+    updateTaxSetting(input: TaxSettingUpdateInput!): TaxSetting
+    deleteTaxSetting(id: String!): TaxSetting
+
+  }
+
+  interface MutationResponse {
+    success: Boolean!
+    code: String!
+  }
+
+  # type UserCrudResponse implements MutationResponse {
+  #   code: String!
+  #   user: User
+  # }
+
+  type Organization {
+    id: String!
+    name: String!
+    phone: String!
+    dispensaries: [Dispensary]
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input OrganizationCreateInput {
+    name: String!
+    phone: String!
+  }
+
+  input OrganizationUpdateInput {
+    id: String!
+    name: String!
+    phone: String!
+  }
+
+  type Dispensary {
+    id: String!
+    name: String!
+    dispensaryType: DispensaryType!
+    organization: Organization!
+    organizationId: String!
+    users: [User]
+    businessLicense: String!
+    phone: String!
+    email: String!
+    locationAddress: String!
+    locationCity: String!
+    locationState: StateType!
+    locationZipCode: String!
+    metrcConnectionStatus: Boolean
+    metrcLicenseNumber: String
+    metrcApiKey: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input DispensaryCreateInput {
+    name: String!
+    dispensaryType: DispensaryType!
+    organizationId: String!
+    businessLicense: String
+    phone: String!
+    email: String!
+    locationAddress: String
+    locationCity: String
+    locationState: StateType
+    locationZipCode: String
+  }
+
+  input DispensaryUpdateInput {
+    id: String!
+    name: String!
+    dispensaryType: DispensaryType!
+    businessLicense: String
+    phone: String!
+    email: String!
+    locationAddress: String
+    locationCity: String
+    locationState: StateType
+    locationZipCode: String
+  }
+
+  type User {
+    id: String!
+    userType: UserType!
+    email: String!
+    password: String!
+    name: String!
+    phone: String!
+    dispensary: Dispensary!
+    dispensaryId: String!
+    isEmailVerified: Boolean!
+    isActive: Boolean!
+    isOrganizationAdmin: Boolean!
+    isDispensaryAdmin: Boolean!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type Customer {
+    id: String!
+    name: String!
+    MFType: MFType!
+    birthday: String!
+    email: String!
+    phone: String!
+    dispensary: Dispensary!
+    dispensaryId: String!
+    isActive: Boolean!
+    driverLicense: String!
+    driverLicenseExpirationDate: String!
+    isMedical: Boolean!
+    medicalLicense: String!
+    medicalLicenseExpirationDate: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type Supplier {
+    id:              String!
+    name:            String!
+    supplierType:    SupplierType!
+    businessLicense: String!
+    UBI:             String!
+    phone:           String!
+    email:           String!
+    locationAddress: String!
+    locationCity:    String!
+    locationState:   StateType!
+    locationZipCode: String!
+    organizationId:  String!
+    isActive:        Boolean!
+    createdAt:       DateTime!
+    updatedAt:       DateTime!
+  }
+
+  input SupplierCreateInput {
+    name:            String!
+    businessLicense: String!
+    UBI:             String!
+    phone:           String!
+    email:           String!
+    locationAddress: String!
+    locationCity:    String!
+    locationState:   StateType!
+    locationZipCode: String!
+    organizationId:  String!
+    supplierType:    SupplierType!
+    isActive:        Boolean!
+  }
+
+  input SupplierUpdateInput {
+    id:              String!
+    name:            String!
+    businessLicense: String!
+    UBI:             String!
+    phone:           String!
+    email:           String!
+    locationAddress: String!
+    locationCity:    String!
+    locationState:   StateType!
+    locationZipCode: String!
+    supplierType:    SupplierType!
+    isActive:        Boolean!
+  }
+
+  type Loyalty {
+    id: String!
+    dispensaryId: String!
+    name: String!
+    type: LoyaltyType!
+    pointWorth: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type Discount {
+    id: String!
+    dispensaryId: String!
+    name: String!
+    type: DiscountType!
+    discountPercent: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+
+  input UserCreateInput {
+    userType: UserType!
+    email: String!
+    name: String!
+    password: String!
+    phone: String!
+    dispensaryId: String!
+    isOrganizationAdmin: Boolean!
+    isDispensaryAdmin: Boolean!
+    isActive: Boolean!
+  }
+
+  input UserUpdateInput {
+    id: String!
+    userType: UserType!
+    email: String!
+    name: String!
+    phone: String!
+    dispensaryId: String!
+    isActive: Boolean!
+    isDispensaryAdmin: Boolean!
+    isOrganizationAdmin: Boolean!
+  }
+
+  input CustomerCreateInput {
+    name: String!
+    MFType: MFType!
+    birthday: String!
+    email: String!
+    phone: String!
+    dispensaryId: String!
+    isActive: Boolean!
+    driverLicense: String!
+    driverLicenseExpirationDate: String!
+    isMedical: Boolean!
+    medicalLicense: String!
+    medicalLicenseExpirationDate: String!
+  }
+
+  input CustomerUpdateInput {
+    id: String!
+    MFType: MFType!
+    name: String!
+    birthday: String!
+    email: String!
+    phone: String!
+    isActive: Boolean!
+    driverLicense: String!
+    driverLicenseExpirationDate: String!
+    isMedical: Boolean!
+    medicalLicense: String!
+    medicalLicenseExpirationDate: String!
+  }
+
+  input UserLoginInput {
+    email: String!
+    password: String!
+  }
+
+  type userData {
+    token: String!
+  }
+
+  input MetrcConnectionInput {
+    metrcConnectionStatus: Boolean!
+    metrcApiKey: String
+    metrcLicenseNumber: String
+    dispensaryId : String!
+  }
+
+  input LoyaltyCreateInput {
+    dispensaryId: String!
+    name: String!
+    type: LoyaltyType!
+    pointWorth: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+  }
+
+  input LoyaltyUpdateInput {
+    id: String!
+    name: String!
+    type: LoyaltyType!
+    pointWorth: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+  }
+
+  input DiscountCreateInput {
+    dispensaryId: String!
+    name: String!
+    type: DiscountType!
+    discountPercent: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+  }
+
+  input DiscountUpdateInput {
+    id: String!
+    name: String!
+    type: DiscountType!
+    discountPercent: String!
+    applyDurationSet: Boolean!
+    applyFrom: String!
+    applyTo: String!
+    isActive: Boolean!
+    isAdminPin: Boolean!
+    color: String!
+  }
+
+  type metrcInfo  {
+    metrcConnectionStatus: Boolean!
+    metrcApiKey: String
+    metrcLicenseNumber: String
+    id : String!
+  }
+
+  type ItemCategory {
+    id: String!
+    name: String!
+    stateOfUsa: StateType!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type TaxSetting {
+    id: String!
+    dispensaryId: String!
+    name: String!
+    rate: String!
+    categories: [ProductCategoryOutput]
+    applyTo: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input TaxSettingCreateInput {
+    dispensaryId: String!
+    name: String!
+    rate: String!
+    categories: [ProductCategoryInput]
+    applyTo: String!
+  }
+
+  input TaxSettingUpdateInput {
+    id: String!
+    name: String!
+    rate: String!
+    categories: [ProductCategoryInput]
+    applyTo: String!
+  }
+
+  type ProductCategoryOutput {
+    value: String!
+    label: String!
+    stateOfUsa: String!
+  }
+
+  input ProductCategoryInput {
+    value: String!
+    label: String!
+    stateOfUsa: String!
+  }
+
+  input ItemCategoryCreateInput {
+    name: String!
+    stateOfUsa: StateType!
+  }
+
+  input ItemCategoryUpdateInput {
+    id: String!
+    name: String!
+  }
+
+  enum StateType {
+    AL
+    AK  
+    AZ
+    AR
+    CA
+    CO
+    CT
+    DE
+    FL
+    GA
+    HI
+    ID
+    IL
+    IN
+    IA
+    KS
+    KY
+    LA
+    ME
+    MD
+    MA
+    MI
+    MN
+    MS
+    MO
+    MT
+    NE
+    NV
+    NH
+    NJ
+    NM
+    NY
+    NC
+    ND
+    OH
+    OK
+    OR
+    PA
+    RI
+    SC
+    SD
+    TN
+    TX
+    UT
+    VT
+    VA
+    WA
+    WV
+    WI
+    WY
+  }
+
+  enum DispensaryType {
+    MED
+    REC
+    MEDREC
+  }
+
+  enum UserType {
+    MANAGER
+    BUDTENDER
+    ADMIN
+  }
+
+  enum MFType {
+    MALE  
+    FEMALE
+  }
+
+  enum LoyaltyType {
+    STANDARD
+    OTHER
+  }
+
+  enum DiscountType {
+    STANDARD
+    OTHER
+  }
+
+  enum ProductType {
+    MJ
+    NMJ
+  }
+
+enum SupplierType {
+  Lab
+  Distributor
+  Cultivator
+  DeliveryService
+  Dispensary
+  Processor
+  Other
+}
+
+  scalar DateTime

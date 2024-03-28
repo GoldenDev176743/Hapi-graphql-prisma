@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id           String       @id @default(cuid())
+  name         String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  phone        String
+  dispensaries Dispensary[]
+}
+
+model Dispensary {
+  id                    String         @id @default(cuid())
+  name                  String
+  businessLicense       String?
+  phone                 String
+  email                 String
+  locationAddress       String
+  locationCity          String
+  locationState         StateType
+  locationZipCode       String
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  dispensaryType        DispensaryType
+  organizationId        String
+  metrcApiKey           String?
+  metrcConnectionStatus Boolean        @default(false)
+  metrcLicenseNumber    String?
+  organization          Organization   @relation(fields: [organizationId], references: [id])
+  users                 User[]
+}
+
+model User {
+  id                  String     @id @default(cuid())
+  email               String     @unique
+  name                String
+  dispensaryId        String
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  userType            UserType
+  isActive            Boolean    @default(false)
+  isDispensaryAdmin   Boolean    @default(false)
+  isEmailVerified     Boolean    @default(false)
+  isOrganizationAdmin Boolean    @default(false)
+  phone               String
+  password            String
+  dispensary          Dispensary @relation(fields: [dispensaryId], references: [id])
+}
+
+model Customer {
+  id                           String   @id @default(cuid())
+  name                         String
+  MFType                       MFType   @default(MALE)
+  birthday                     String
+  email                        String
+  phone                        String
+  dispensaryId                 String
+  isActive                     Boolean
+  driverLicense                String
+  driverLicenseExpirationDate  String
+  isMedical                    Boolean
+  medicalLicense               String
+  medicalLicenseExpirationDate String
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+}
+
+model Supplier {
+  id              String       @id @default(cuid())
+  name            String
+  businessLicense String?
+  UBI             String?
+  phone           String
+  email           String
+  locationAddress String
+  locationCity    String
+  locationState   StateType
+  locationZipCode String
+  organizationId  String
+  supplierType    SupplierType
+  isActive        Boolean
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Loyalty {
+  id               String      @id @default(cuid())
+  dispensaryId     String
+  name             String
+  type             LoyaltyType @default(STANDARD)
+  pointWorth       String
+  applyDurationSet Boolean
+  applyFrom        String
+  applyTo          String
+  isActive         Boolean
+  isAdminPin       Boolean
+  color            String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Discount {
+  id               String       @id @default(cuid())
+  dispensaryId     String
+  name             String
+  type             DiscountType @default(STANDARD)
+  discountPercent  String
+  applyDurationSet Boolean
+  applyFrom        String
+  applyTo          String
+  isActive         Boolean
+  isAdminPin       Boolean
+  color            String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model ItemCategory {
+  id         String    @id @default(cuid())
+  name       String
+  stateOfUsa StateType
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model TaxSetting {
+  id           String   @id @default(cuid())
+  dispensaryId String
+  name         String
+  rate         String
+  categories   Json?
+  applyTo      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum StateType {
+  AL
+  AK
+  AZ
+  AR
+  CA
+  CO
+  CT
+  DE
+  FL
+  GA
+  HI
+  ID
+  IL
+  IN
+  IA
+  KS
+  KY
+  LA
+  ME
+  MD
+  MA
+  MI
+  MN
+  MS
+  MO
+  MT
+  NE
+  NV
+  NH
+  NJ
+  NM
+  NY
+  NC
+  ND
+  OH
+  OK
+  OR
+  PA
+  RI
+  SC
+  SD
+  TN
+  TX
+  UT
+  VT
+  VA
+  WA
+  WV
+  WI
+  WY
+}
+
+enum DispensaryType {
+  MED
+  REC
+  MEDREC
+}
+
+enum UserType {
+  MANAGER
+  BUDTENDER
+  ADMIN
+}
+
+enum MFType {
+  MALE
+  FEMALE
+}
+
+enum LoyaltyType {
+  STANDARD
+  OTHER
+}
+
+enum DiscountType {
+  STANDARD
+  OTHER
+}
+
+enum SupplierType {
+  Lab
+  Distributor
+  Cultivator
+  DeliveryService
+  Dispensary
+  Processor
+  Other
+}
